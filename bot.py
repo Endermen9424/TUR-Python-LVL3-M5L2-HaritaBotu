@@ -20,12 +20,19 @@ async def start(ctx: commands.Context):
 @bot.command()
 async def help_me(ctx: commands.Context):
     await ctx.send(
-        # Kullanılabilir komutların listesini gösterecek olan komutu yazın.
+        text="""Mevcut komutlar:\n
+             !start - Botu başlatır ve selam verir.\n
+             !help_me - Mevcut komutların listesini gösterir.\n
+             !show_city <şehir_adı> - Belirtilen şehirle birlikte haritayı gösterir.\n
+             !show_my_cities - Kullanıcının kaydettiği şehirlerle birlikte haritayı gösterir.\n
+             !remember_city <şehir_adı> - Belirtilen şehri kullanıcının şehirleri arasına kaydeder.\n
+             """
     )
 
 @bot.command()
 async def show_city(ctx: commands.Context, *, city_name=""):
-    # Belirtilen şehirle birlikte haritayı gösterecek komutu yazın.
+    manager.create_graph("img/map.png", [city_name])  # Belirtilen şehirle harita oluşturma
+    await ctx.send(file=discord.File("img/map.png"))  # Haritayı kullanıcıya gönderme
 
 @bot.command()
 async def show_my_cities(ctx: commands.Context):

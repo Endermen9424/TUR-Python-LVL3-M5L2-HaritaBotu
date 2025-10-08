@@ -60,13 +60,42 @@ class DB_Map():
             return coordinates  # Şehrin koordinatlarını döndürme
 
     def create_graph(self, path, cities):
-        pass
+        # Harita oluşturma
+        fig = plt.figure(figsize=(10, 5))
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        ax.stock_img()  # Temel harita görüntüsünü ekleme
 
-    def draw_distance(self, city1, city2):
+        # Şehirlerin koordinatlarını alma ve haritaya işaretleme
+        coordinats = [self.get_coordinates(city) for city in cities]
+        for coord, city in zip(coordinats, cities):
+            if coord:
+                lat, lon = coord
+                ax.plot(lon, lat, marker='o', color='red', markersize=5, transform=ccrs.PlateCarree())
+                ax.text(lon + 0.5, lat + 0.5, city, transform=ccrs.PlateCarree())
+        plt.title('User Cities Map')
+        plt.savefig(path)  # Haritayı belirtilen yola kaydetme
+        plt.close()
+
+    def draw_distance(self, city1, city2, path='img/distance.png'):
         # İki şehir arasındaki mesafeyi göstermek için bir çizgi çizme
-        pass
+        fig = plt.figure(figsize=(10, 5))
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        ax.stock_img()  # Temel harita görüntüsünü ekleme
+        coord1 = self.get_coordinates(city1)
+        coord2 = self.get_coordinates(city2)
+        if coord1 and coord2:
+            lat1, lon1 = coord1
+            lat2, lon2 = coord2
+            ax.plot([lon1, lon2], [lat1, lat2], color='blue', linewidth=2, marker='o', transform=ccrs.PlateCarree())
+            ax.text(lon1 + 0.5, lat1 + 0.5, city1, transform=ccrs.PlateCarree())
+            ax.text(lon2 + 0.5, lat2 + 0.5, city2, transform=ccrs.PlateCarree())
+            plt.title(f'Distance between {city1} and {city2}')
+            plt.savefig(path)  # Mesafe haritasını kaydetme
+            plt.close()
 
 
 if __name__ == "__main__":
     m = DB_Map("database.db")  # Veri tabanıyla etkileşime geçecek bir nesne oluşturma
     m.create_user_table()   # Kullanıcı şehirleri tablosunu oluşturma (eğer zaten yoksa)
+    m.create_graph("img/map.png", ["Istanbul"])
+    m.draw_distance("Istanbul", "Eskisehir", "img/distance.png")
