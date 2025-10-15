@@ -30,15 +30,17 @@ async def help_me(ctx: commands.Context):
     )
 
 @bot.command()
-async def show_city(ctx: commands.Context, *, city_name=""):
-    manager.create_graph("img/map.png", [city_name])  # Belirtilen şehirle harita oluşturma
+async def show_city(ctx: commands.Context, *, city_name="", mark_color=""):
+    manager.create_graph("img/map.png", [city_name], mark_color)  # Belirtilen şehirle harita oluşturma
     await ctx.send(file=discord.File("img/map.png"))  # Haritayı kullanıcıya gönderme
 
 @bot.command()
 async def show_my_cities(ctx: commands.Context):
     cities = manager.select_cities(ctx.author.id)  # Kullanıcının kaydettiği şehirlerin listesini alma
 
-    # Kullanıcının şehirleriyle birlikte haritayı gösterecek komutu yazın
+    if cities:
+        manager.create_graph("img/map.png", cities)  # Kullanıcının şehirleriyle harita oluşturma
+        await ctx.send(file=discord.File("img/map.png"))  # Haritayı kullanıcıya gönderme
 
 @bot.command()
 async def remember_city(ctx: commands.Context, *, city_name=""):

@@ -59,7 +59,7 @@ class DB_Map():
             coordinates = cursor.fetchone()
             return coordinates  # Şehrin koordinatlarını döndürme
 
-    def create_graph(self, path, cities):
+    def create_graph(self, path, cities, mark_color):
         # Harita oluşturma
         fig = plt.figure(figsize=(10, 5))
         ax = plt.axes(projection=ccrs.PlateCarree())
@@ -70,7 +70,7 @@ class DB_Map():
         for coord, city in zip(coordinats, cities):
             if coord:
                 lat, lon = coord
-                ax.plot(lon, lat, marker='o', color='red', markersize=5, transform=ccrs.PlateCarree())
+                ax.plot(lon, lat, marker='o', color=mark_color, markersize=5, transform=ccrs.PlateCarree())
                 ax.text(lon + 0.5, lat + 0.5, city, transform=ccrs.PlateCarree())
         plt.title('User Cities Map')
         plt.savefig(path)  # Haritayı belirtilen yola kaydetme
